@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Popup states</title>
+<style>
+  :root {
+    --page: #ececf0;
+    --panel: #ffffff;
+    --group: #f5f5f7;
+    --ink: #1d1d1f;
+    --ink-2: #6e6e73;
+    --ink-3: #a1a1a6;
+    --line: rgba(0,0,0,.08);
+    --on: #1d1d1f;
+    --off: #d9d9de;
+    --knob: #ffffff;
+    --lock-bg: #1d1d1f;
+    --lock-ink: #ffffff;
+    --check-bg: #e8f5ec;
+    --check-ink: #1c6b3a;
+    --shadow: 0 10px 30px rgba(0,0,0,.12), 0 1px 3px rgba(0,0,0,.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --page: #111113;
+      --panel: #1c1c1e;
+      --group: #2a2a2d;
+      --ink: #f5f5f7;
+      --ink-2: #a1a1a6;
+      --ink-3: #6e6e73;
+      --line: rgba(255,255,255,.08);
+      --on: #f5f5f7;
+      --off: #3a3a3d;
+      --knob: #1c1c1e;
+      --lock-bg: #f5f5f7;
+      --lock-ink: #1d1d1f;
+      --check-bg: #173322;
+      --check-ink: #8fe0ad;
+      --shadow: 0 10px 30px rgba(0,0,0,.5);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 28px 16px 48px;
+    background: var(--page); color: var(--ink);
+    font: 13px/1.35 -apple-system, "SF Pro Text", Inter, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1 { font-size: 20px; font-weight: 650; letter-spacing: -.01em; margin: 0 0 4px; text-align: center; }
+  .sub { color: var(--ink-2); text-align: center; margin: 0 0 28px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 330px)); gap: 32px 28px; justify-content: center; }
+  .cap { text-align: center; margin-top: 12px; }
+  .cap b { display: block; font-size: 13px; font-weight: 600; }
+  .cap span { color: var(--ink-2); font-size: 12px; }
+
+  .popup { background: var(--panel); border-radius: 14px; box-shadow: var(--shadow); padding: 14px; width: 100%; }
+  .head { display: flex; align-items: center; gap: 10px; padding: 2px 2px 12px; }
+  .appicon { width: 26px; height: 26px; border-radius: 7px; background: var(--ink); display: grid; place-items: center; flex: none; }
+  .appicon svg { width: 15px; height: 15px; }
+  .name { font-weight: 650; font-size: 14px; flex: 1; }
+  .name small { display: block; font-weight: 400; font-size: 11px; color: var(--ink-3); }
+  .back { display: flex; align-items: center; gap: 2px; color: var(--ink-2); font-size: 13px; }
+  .title-c { flex: 1; text-align: center; font-weight: 650; font-size: 14px; margin-right: 40px; }
+
+  .label { font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-3); margin: 6px 4px 6px; }
+  .group { background: var(--group); border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
+  .row { display: flex; align-items: center; justify-content: space-between; min-height: 38px; padding: 0 12px; }
+  .row + .row { border-top: 1px solid var(--line); }
+  .row .v { color: var(--ink-2); display: flex; align-items: center; gap: 4px; }
+  .row.dim > span:first-child { color: var(--ink-3); }
+
+  .tg { width: 34px; height: 20px; border-radius: 10px; background: var(--off); position: relative; flex: none; }
+  .tg::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--knob); box-shadow: 0 1px 2px rgba(0,0,0,.25); }
+  .tg.on { background: var(--on); }
+  .tg.on::after { left: 16px; }
+  .tg.locked { opacity: .45; }
+  .lk { width: 11px; height: 11px; color: var(--ink-3); }
+  .showing { color: var(--check-ink); font-size: 12px; font-weight: 550; }
+
+  .banner { border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; display: flex; gap: 10px; align-items: center; }
+  .banner.lock { background: var(--lock-bg); color: var(--lock-ink); }
+  .banner.check { background: var(--check-bg); color: var(--check-ink); }
+  .banner svg { width: 18px; height: 18px; flex: none; }
+  .banner b { display: block; font-size: 13px; font-weight: 650; }
+  .banner span { font-size: 12px; opacity: .75; }
+
+  .fields { display: flex; gap: 8px; margin-bottom: 8px; }
+  .field { background: var(--group); border-radius: 9px; padding: 9px 11px; font-weight: 550; }
+  .field.grow { flex: 1; }
+  .chips { display: flex; gap: 6px; margin: 0 0 14px; }
+  .chip { border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; font-size: 12px; color: var(--ink-2); background: var(--panel); }
+  .chip.sel { border-color: var(--ink); color: var(--ink); font-weight: 550; }
+  .note { color: var(--ink-2); font-size: 12px; margin: 2px 4px 12px; }
+  .btn { display: block; width: 100%; text-align: center; border-radius: 10px; padding: 10px; font-weight: 650; background: var(--ink); color: var(--panel); }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); font-weight: 550; }
+  .chev { width: 12px; height: 12px; color: var(--ink-3); }
+</style>
+</head>
+<body>
+  <h1>Toolbar popup</h1>
+  <p class="sub">The same popup in four situations. Name is a placeholder.</p>
+
+  <div class="grid">
+
+    <!-- 1. Normal -->
+    <div>
+      <div class="popup">
+        <div class="head">
+          <div class="appicon"><svg viewBox="0 0 16 16" fill="none" stroke="var(--panel)" stroke-width="1.6" stroke-linecap="round"><path d="M2 8c1.6-2.7 3.6-4 6-4s4.4 1.3 6 4c-1.6 2.7-3.6 4-6 4s-4.4-1.3-6-4z"/><path d="M3 13L13 3"/></svg></div>
+          <div class="name">Name TBD</div>
+          <div class="tg on"></div>
+        </div>
+        <div class="label">Hide in YouTube Studio</div>
+        <div class="group">
+          <div class="row"><span>Insights</span><div class="tg on"></div></div>
+          <div class="row"><span>Views</span><div class="tg on"></div></div>
+          <div class="row"><span>Subscribers</span><div class="tg on"></div></div>
+          <div class="row"><span>Revenue</span><div class="tg on"></div></div>
+          <div class="row"><span>Likes</span><div class="tg"></div></div>
+          <div class="row"><span>Comments</span><div class="tg"></div></div>
+          <div class="row"><span>AI features</span><div class="tg on"></div></div>
+        </div>
+        <div class="group">
+          <div class="row"><span>Hard mode</span><span class="v">Off <svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4.5 2.5L8 6l-3.5 3.5"/></svg></span></div>
+        </div>
+      </div>
+      <div class="cap"><b>1. Normal</b><span>Flip any switch. The top switch pauses everything.</span></div>
+    </div>
+
+    <!-- 2. Setting hard mode -->
+    <div>
+      <div class="popup">
+        <div class="head">
+          <div class="back"><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7.5 2.5L4 6l3.5 3.5"/></svg>Back</div>
+          <div class="title-c">Hard mode</div>
+        </div>
+        <div class="label">Lock until</div>
+        <div class="fields">
+          <div class="field grow">Mon 30 Nov 2026</div>
+          <div class="field">09:00</div>
+        </div>
+        <div class="chips">
+          <div class="chip">Tomorrow</div>
+          <div class="chip">1 week</div>
+          <div class="chip sel">Until a date</div>
+        </div>
+        <div class="label">Weekly check-in</div>
+        <div class="group">
+          <div class="row"><span>Check-in</span><div class="tg on"></div></div>
+          <div class="row"><span>Day</span><span class="v">Sunday</span></div>
+          <div class="row"><span>Starts</span><span class="v">10:00</span></div>
+          <div class="row"><span>Lasts</span><span class="v">30 min</span></div>
+        </div>
+        <p class="note">Until the lock ends, switches only turn on. The lock can be extended, not shortened.</p>
+        <div class="btn">Lock</div>
+      </div>
+      <div class="cap"><b>2. Setting hard mode</b><span>Pick the end date and time, and the weekly window.</span></div>
+    </div>
+
+    <!-- 3. Locked -->
+    <div>
+      <div class="popup">
+        <div class="head">
+          <div class="appicon"><svg viewBox="0 0 16 16" fill="none" stroke="var(--panel)" stroke-width="1.6" stroke-linecap="round"><path d="M2 8c1.6-2.7 3.6-4 6-4s4.4 1.3 6 4c-1.6 2.7-3.6 4-6 4s-4.4-1.3-6-4z"/><path d="M3 13L13 3"/></svg></div>
+          <div class="name">Name TBD</div>
+        </div>
+        <div class="banner lock">
+          <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3.5" y="8" width="11" height="7.5" rx="2"/><path d="M6 8V5.8a3 3 0 0 1 6 0V8"/></svg>
+          <div><b>Locked until Mon 30 Nov, 09:00</b><span>17 days left</span></div>
+        </div>
+        <div class="label">Hide in YouTube Studio</div>
+        <div class="group">
+          <div class="row"><span>Insights</span><span class="v"><svg class="lk" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2.5" y="5.5" width="7" height="5" rx="1.2"/><path d="M4 5.5V4a2 2 0 0 1 4 0v1.5"/></svg><div class="tg on locked"></div></span></div>
+          <div class="row"><span>Views</span><span class="v"><svg class="lk" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2.5" y="5.5" width="7" height="5" rx="1.2"/><path d="M4 5.5V4a2 2 0 0 1 4 0v1.5"/></svg><div class="tg on locked"></div></span></div>
+          <div class="row"><span>Subscribers</span><span class="v"><svg class="lk" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2.5" y="5.5" width="7" height="5" rx="1.2"/><path d="M4 5.5V4a2 2 0 0 1 4 0v1.5"/></svg><div class="tg on locked"></div></span></div>
+          <div class="row"><span>Revenue</span><span class="v"><svg class="lk" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2.5" y="5.5" width="7" height="5" rx="1.2"/><path d="M4 5.5V4a2 2 0 0 1 4 0v1.5"/></svg><div class="tg on locked"></div></span></div>
+          <div class="row"><span>Likes</span><div class="tg"></div></div>
+          <div class="row"><span>Comments</span><div class="tg"></div></div>
+          <div class="row"><span>AI features</span><span class="v"><svg class="lk" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2.5" y="5.5" width="7" height="5" rx="1.2"/><path d="M4 5.5V4a2 2 0 0 1 4 0v1.5"/></svg><div class="tg on locked"></div></span></div>
+        </div>
+        <div class="group">
+          <div class="row"><span>Next check-in</span><span class="v">Sun 15 Nov, 10:00</span></div>
+          <div class="row"><span>Extend lock</span><span class="v"><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4.5 2.5L8 6l-3.5 3.5"/></svg></span></div>
+        </div>
+      </div>
+      <div class="cap"><b>3. Locked</b><span>On switches are greyed out. Off ones can still be turned on.</span></div>
+    </div>
+
+    <!-- 4. During check-in -->
+    <div>
+      <div class="popup">
+        <div class="head">
+          <div class="appicon"><svg viewBox="0 0 16 16" fill="none" stroke="var(--panel)" stroke-width="1.6" stroke-linecap="round"><path d="M2 8c1.6-2.7 3.6-4 6-4s4.4 1.3 6 4c-1.6 2.7-3.6 4-6 4s-4.4-1.3-6-4z"/><path d="M3 13L13 3"/></svg></div>
+          <div class="name">Name TBD</div>
+        </div>
+        <div class="banner check">
+          <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="9" r="6.5"/><path d="M9 5.5V9l2.5 1.5"/></svg>
+          <div><b>Check-in open until 10:30</b><span>22 min left</span></div>
+        </div>
+        <div class="label">YouTube Studio</div>
+        <div class="group">
+          <div class="row"><span>Insights</span><span class="showing">Showing</span></div>
+          <div class="row"><span>Views</span><span class="showing">Showing</span></div>
+          <div class="row"><span>Subscribers</span><span class="showing">Showing</span></div>
+          <div class="row"><span>Revenue</span><span class="showing">Showing</span></div>
+          <div class="row"><span>Likes</span><span class="showing">Showing</span></div>
+          <div class="row"><span>Comments</span><span class="showing">Showing</span></div>
+          <div class="row dim"><span>AI features</span><span class="v">Still hidden</span></div>
+        </div>
+        <div class="btn ghost">End check-in now</div>
+      </div>
+      <div class="cap"><b>4. During check-in</b><span>Numbers come back for the window. AI stays hidden.</span></div>
+    </div>
+
+  </div>
+</body>
+</html>
