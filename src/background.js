@@ -48,7 +48,9 @@ chrome.runtime.onMessage.addListener((msg, sender, reply) => {
     return true;
   }
   if (msg?.type === 'action') {
-    queue(async () => save(HM.reduce(await load(), msg.action, Date.now()))).then(reply, () => reply(null));
+    const done = queue(async () => save(HM.reduce(await load(), msg.action, Date.now())));
+    done.then(reply, () => reply(null));
+    if (msg.action?.type === 'lock') done.then(guardOpenTabs, () => {});
     return true;
   }
 });
@@ -81,9 +83,43 @@ chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === ALARM) queue(refresh);
 });
 
-// Chrome may have been closed across a lock end or a check-in boundary.
-chrome.runtime.onStartup.addListener(() => queue(refresh));
+// ---- Hard mode guard: while locked, the browser's extensions page (where the
+// extension could be switched off) is replaced by a page saying when the lock
+// ends. Chrome only tells us tab URLs once the optional `tabs` permission is
+// granted, so without it nothing here fires and the lock simply works unguarded.
 
-chrome.runtime.onInstalled.addListener(() => {
+const LOCKED_PAGE = 'src/pages/locked.html';
+
+async function guardTab(tabId, url) {
+  if (!HM.isExtensionsPage(url)) return;
+  const now = Date.now();
+  const state = HM.settle(await load(), now);
+  if (!HM.isLocked(state, now) || !state.lock.guard) return;
+  try {
+    await chrome.tabs.update(tabId, { url: chrome.runtime.getURL(LOCKED_PAGE) });
+  } catch {
+    try { await chrome.tabs.remove(tabId); } catch { /* already gone */ }
+  }
+}
+
+async function guardOpenTabs() {
+  if (!(await chrome.permissions.contains({ permissions: ['tabs'] }))) return;
+  for (const tab of await chrome.tabs.query({})) if (tab.url) await guardTab(tab.id, tab.url);
+}
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+  if (changeInfo.url) guardTab(tabId, changeInfo.url);
+});
+chrome.permissions.onAdded.addListener(() => guardOpenTabs());
+
+// Chrome may have been closed across a lock end or a check-in boundary.
+chrome.runtime.onStartup.addListener(() => {
+  queue(refresh).then(guardOpenTabs);
+});
+
+chrome.runtime.onInstalled.addListener((details) => {
   queue(refresh);
+  if (details && details.reason === 'install') {
+    chrome.tabs.create({ url: chrome.runtime.getURL('src/pages/welcome.html') });
+  }
 });

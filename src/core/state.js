@@ -182,7 +182,14 @@
     return t;
   }
 
+  // The browser's own extensions page (where an extension can be switched
+  // off), in Chrome and the Chrome-based browsers that install from its store.
+  function isExtensionsPage(url) {
+    return typeof url === 'string' && /^(chrome|edge|brave|opera|vivaldi):\/\/extensions(\/|\?|#|$)/i.test(url);
+  }
+
   Object.assign(HM, {
     SWITCHES, SITES, defaultState, normalizeState, isLocked, settle, enforceLock, reduce, computeEffective, nextTransition,
+    isExtensionsPage,
   });
 })(globalThis.HM = globalThis.HM || {});

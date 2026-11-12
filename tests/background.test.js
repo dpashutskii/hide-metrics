@@ -9,13 +9,25 @@ const src = (f) => fs.readFileSync(new URL(`../src/${f}`, import.meta.url), 'utf
 const tick = () => new Promise((r) => setTimeout(r, 15));
 async function idle() { for (let i = 0; i < 8; i++) await tick(); }
 
-function boot(initial = {}) {
+function boot(initial = {}, opts = {}) {
   const data = structuredClone(initial);
-  const on = { changed: [], message: [], alarm: [], startup: [], installed: [] };
+  const on = { changed: [], message: [], alarm: [], startup: [], installed: [], tabUpdated: [], permAdded: [] };
   const alarms = new Map();
+  const tabs = { list: [], updated: [], removed: [], created: [], failUpdate: false, granted: opts.granted ?? true };
   const event = (list) => ({ addListener: (f) => list.push(f) });
   const chrome = {
-    runtime: { id: 'test-ext', onMessage: event(on.message), onStartup: event(on.startup), onInstalled: event(on.installed) },
+    runtime: { id: 'test-ext', getURL: (p) => `chrome-extension://test-ext/${p}`, onMessage: event(on.message), onStartup: event(on.startup), onInstalled: event(on.installed) },
+    tabs: {
+      onUpdated: event(on.tabUpdated),
+      async query() { return tabs.granted ? structuredClone(tabs.list) : tabs.list.map(({ id }) => ({ id })); },
+      async update(id, props) { if (tabs.failUpdate) throw new Error('cannot'); tabs.updated.push([id, props.url]); },
+      async remove(id) { tabs.removed.push(id); },
+      async create(props) { tabs.created.push(props.url); },
+    },
+    permissions: {
+      async contains() { return tabs.granted; },
+      onAdded: event(on.permAdded),
+    },
     storage: {
       local: {
         async get(keys) {
@@ -48,7 +60,7 @@ function boot(initial = {}) {
     const keep = on.message.map((f) => f(msg, { id: 'test-ext' }, resolve));
     assert.ok(keep.includes(true));
   });
-  return { data, on, alarms, chrome, send, HM: ctx.HM };
+  return { data, on, alarms, tabs, chrome, send, HM: ctx.HM };
 }
 
 test('install writes defaults and effective', async () => {
@@ -135,4 +147,70 @@ test('rapid actions are not undone by late change events', async () => {
   await idle();
   assert.equal(b.data.state.hide.likes, true);
   assert.equal(b.data.state.hide.views, false);
+});
+
+const LOCKED_PAGE = 'chrome-extension://test-ext/src/pages/locked.html';
+const lockFor = (b, guard = true) => b.send({ type: 'action', action: { type: 'lock', until: Date.now() + 6e5, checkIn: null, guard } });
+// With `tabs` granted Chrome reports the new URL; without it, changeInfo has no url.
+const navigate = (b, id, url) => b.on.tabUpdated.forEach((f) => f(id, b.tabs.granted ? { url } : { status: 'loading' }, b.tabs.granted ? { id, url } : { id }));
+
+test('locked: opening the extensions page lands on the locked page', async () => {
+  const b = boot();
+  await lockFor(b);
+  navigate(b, 7, 'chrome://extensions/');
+  navigate(b, 8, 'brave://extensions/?id=abc');
+  navigate(b, 9, 'https://example.com/');
+  await idle();
+  assert.deepEqual(b.tabs.updated, [[7, LOCKED_PAGE], [8, LOCKED_PAGE]]);
+});
+
+test('not locked: the extensions page opens normally', async () => {
+  const b = boot();
+  navigate(b, 7, 'chrome://extensions/');
+  await idle();
+  assert.deepEqual(b.tabs.updated, []);
+});
+
+test('lock without the guard does not touch the extensions page', async () => {
+  const b = boot();
+  await lockFor(b, false);
+  navigate(b, 7, 'chrome://extensions/');
+  await idle();
+  assert.deepEqual(b.tabs.updated, []);
+});
+
+test('without the tabs permission the lock still works and nothing is guarded', async () => {
+  const b = boot({}, { granted: false });
+  const res = await lockFor(b);
+  assert.ok(res.state.lock);
+  navigate(b, 7, 'chrome://extensions/');
+  await idle();
+  assert.deepEqual(b.tabs.updated, []);
+});
+
+test('locking closes an extensions page that is already open', async () => {
+  const b = boot();
+  b.tabs.list = [{ id: 3, url: 'chrome://extensions/' }, { id: 4, url: 'https://studio.youtube.com/' }];
+  await lockFor(b);
+  await idle();
+  assert.deepEqual(b.tabs.updated, [[3, LOCKED_PAGE]]);
+});
+
+test('if the tab cannot be redirected it is closed', async () => {
+  const b = boot();
+  await lockFor(b);
+  b.tabs.failUpdate = true;
+  navigate(b, 7, 'edge://extensions');
+  await idle();
+  assert.deepEqual(b.tabs.removed, [7]);
+});
+
+test('welcome page opens on install only', async () => {
+  const b = boot();
+  b.on.installed.forEach((f) => f({ reason: 'update' }));
+  await idle();
+  assert.deepEqual(b.tabs.created, []);
+  b.on.installed.forEach((f) => f({ reason: 'install' }));
+  await idle();
+  assert.deepEqual(b.tabs.created, ['chrome-extension://test-ext/src/pages/welcome.html']);
 });

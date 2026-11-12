@@ -209,6 +209,15 @@ test('Chrome closed across a boundary', () => {
   assert.equal(HM.nextTransition(locked, T + 1), null);
 });
 
+test('extensions pages of Chrome-based browsers', () => {
+  for (const url of ['chrome://extensions/', 'chrome://extensions/?id=abc', 'chrome://extensions', 'edge://extensions', 'brave://extensions/shortcuts', 'opera://extensions', 'vivaldi://extensions/', 'CHROME://EXTENSIONS/']) {
+    assert.equal(HM.isExtensionsPage(url), true, url);
+  }
+  for (const url of ['chrome://settings', 'https://example.com/chrome://extensions', 'chrome://extensions-internals', '', undefined, 'about:blank']) {
+    assert.equal(HM.isExtensionsPage(url), false, String(url));
+  }
+});
+
 test('after the lock ends, switches turn off again', () => {
   const s = HM.reduce(locked, set(['hide', 'views'], false), T);
   assert.equal(s.lock, null);

@@ -182,6 +182,7 @@
         lock.nextCheckIn && valueRow('Next check-in', HM.formatWhen(lock.nextCheckIn)),
         linkRow('Extend lock', '', () => go('extend')),
       ]));
+      kids.push(incognitoGroup(true));
     } else {
       kids.push(group('', [linkRow('Hard mode', 'Off', () => go('setup'))]));
     }
@@ -258,13 +259,18 @@
     let checkInOn = true;
     const ciToggle = toggle({ checked: true, label: 'Weekly check-in', onchange: (on) => { checkInOn = on; detail.forEach((r) => { r.hidden = !on; }); } });
 
-    btn.addEventListener('click', async () => {
+    btn.addEventListener('click', () => {
       if (until == null) return;
+      // Ask for `tabs` (lets the lock guard the extensions page) inside this
+      // click, and send the lock right away: Chrome's permission prompt can
+      // close the popup before the answer comes back. Declining only means
+      // no guard; the lock itself works either way.
+      if (inExtension) chrome.permissions.request({ permissions: ['tabs'] }).catch(() => {});
       const checkIn = checkInOn && starts.value
         ? { day: Number(day.value), startMin: minutesOf(starts.value), lengthMin: Number(lasts.value) }
         : null;
       view = 'main';
-      await act({ type: 'lock', until, checkIn, guard: false });
+      act({ type: 'lock', until, checkIn, guard: true });
     });
 
     app.classList.remove('paused');
@@ -273,9 +279,30 @@
       ...picker,
       label('Weekly check-in'),
       group('', [h('div', { class: 'row' }, h('span', { text: 'Check-in' }), ciToggle), ...detail]),
+      incognitoGroup(false),
       h('p', { class: 'note', text: 'Until the lock ends, switches only turn on. The lock can be extended, not shortened.' }),
       btn,
     );
+  }
+
+  // Extensions don't run in Incognito unless allowed on their details page,
+  // which the lock guards; so it's offered before locking. Assumed allowed
+  // until Chrome says otherwise (preview: ?incognito=off).
+  let incognitoAllowed = inExtension || new URLSearchParams(location.search).get('incognito') !== 'off';
+  if (inExtension && chrome.extension && chrome.extension.isAllowedIncognitoAccess) {
+    chrome.extension.isAllowedIncognitoAccess().then((ok) => {
+      incognitoAllowed = ok;
+      if (!ok) render();
+    }, () => {});
+  }
+
+  function incognitoGroup(locked) {
+    if (incognitoAllowed) return null;
+    const open = () => chrome.tabs.create({ url: `chrome://extensions/?id=${chrome.runtime.id}` });
+    return group('', [h('div', { class: 'row' },
+      h('span', { class: 'stack' }, h('span', { text: 'Not running in Incognito' }),
+        locked && h('small', { text: 'Can be allowed after the lock ends' })),
+      !locked && h('button', { class: 'mini', text: 'Open settings', onclick: open }))]);
   }
 
   function viewExtend() {
