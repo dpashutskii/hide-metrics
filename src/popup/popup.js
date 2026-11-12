@@ -188,7 +188,7 @@
     }
 
     app.classList.toggle('paused', state.paused && !locked);
-    app.replaceChildren(...kids);
+    show(kids);
   }
 
   // ---------- hard mode setup and extend ----------
@@ -274,7 +274,7 @@
     });
 
     app.classList.remove('paused');
-    app.replaceChildren(
+    show(
       backHead('Hard mode'),
       ...picker,
       label('Weekly check-in'),
@@ -316,7 +316,11 @@
       await act({ type: 'extend', until });
     });
     app.classList.remove('paused');
-    app.replaceChildren(backHead('Extend lock'), ...picker, btn);
+    show(backHead('Extend lock'), ...picker, btn);
+  }
+
+  function show(...parts) {
+    app.replaceChildren(...parts.flat().filter((p) => p != null && p !== false));
   }
 
   function render() {
