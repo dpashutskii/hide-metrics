@@ -35,8 +35,10 @@ browser, by hiding parts of them.
 - `alarms` — to end a hard-mode lock and open or close the weekly check-in on
   time.
 - Access to `studio.youtube.com` and `www.youtube.com` — to hide numbers,
-  stats pages and AI prompts on those two sites. The extension reads nothing
-  from these pages and sends nothing anywhere.
+  stats pages and AI prompts on those two sites. It looks only at the page
+  address (to recognise stats pages) and at the page's layout (to know what to
+  hide); it doesn't read or keep what you watch, write or see, and sends
+  nothing anywhere.
 - `tabs` (optional, asked only when you turn on hard mode) — lets the
   extension notice when the browser's extensions page is opened during a lock
   and show a "locked" page instead. Chrome describes this permission as

@@ -76,9 +76,10 @@ Not affiliated with YouTube or Google.
 - **alarms** — End a hard-mode lock and open/close the weekly check-in at the
   chosen times, even when no YouTube tab is open.
 - **Host: studio.youtube.com** — Hide metrics, Insights pages and AI prompts in
-  YouTube Studio with CSS and a full-page notice. Nothing is read or sent.
+  YouTube Studio with CSS and a full-page notice. Only the page address is
+  checked (to recognise stats pages); nothing is stored or sent.
 - **Host: www.youtube.com** — Hide view, subscriber, like and comment counts on
-  YouTube pages. Nothing is read or sent.
+  YouTube pages with CSS. Nothing is stored or sent.
 - **Optional: tabs** — Requested only when the user turns on hard mode. Used to
   detect the browser's extensions page during a lock and replace it with a
   "locked" page. No browsing data is stored or sent. The lock works without it
