@@ -6,7 +6,7 @@
     statsWord: 'Analytics',
     homeUrl: 'https://www.youtube.com/',
     backLabel: 'Back to YouTube',
-    isStatsPage: () => false,
+    isStatsPage: (url) => /^\/analytics(\/|$)/.test(url.pathname),
     selectors: {},
   });
 })(globalThis.HM = globalThis.HM || {});
