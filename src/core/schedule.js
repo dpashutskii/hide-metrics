@@ -16,7 +16,7 @@
     return new Date(d.getFullYear(), d.getMonth(), d.getDate() + offset, 0, minutes).getTime();
   }
 
-  function window(checkIn, start) {
+  function span(checkIn, start) {
     return { start, end: start + checkIn.lengthMin * MIN };
   }
 
@@ -25,7 +25,7 @@
     const back = (new Date(now).getDay() - checkIn.day + 7) % 7;
     let start = atLocal(now, -back, checkIn.startMin);
     if (start > now) start = atLocal(now, -back - 7, checkIn.startMin);
-    const w = window(checkIn, start);
+    const w = span(checkIn, start);
     return now < w.end ? w : null;
   }
 
@@ -34,7 +34,7 @@
     const ahead = (checkIn.day - new Date(now).getDay() + 7) % 7;
     let start = atLocal(now, ahead, checkIn.startMin);
     if (start <= now) start = atLocal(now, ahead + 7, checkIn.startMin);
-    return window(checkIn, start);
+    return span(checkIn, start);
   }
 
   // 'tomorrow' = tomorrow 09:00; 'week' = 7 days from today at 09:00.

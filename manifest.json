@@ -3,8 +3,13 @@
   "name": "Hide Metrics",
   "version": "1.0.0",
   "description": "Hide views, subscribers, likes, revenue, stats pages and AI prompts on YouTube Studio and YouTube.",
-  "permissions": ["storage", "alarms"],
-  "optional_permissions": ["tabs"],
+  "permissions": [
+    "storage",
+    "alarms"
+  ],
+  "optional_permissions": [
+    "tabs"
+  ],
   "host_permissions": [
     "https://studio.youtube.com/*",
     "https://www.youtube.com/*"
@@ -12,6 +17,23 @@
   "background": {
     "service_worker": "src/background.js"
   },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://studio.youtube.com/*",
+        "https://www.youtube.com/*"
+      ],
+      "run_at": "document_start",
+      "js": [
+        "src/core/schedule.js",
+        "src/content/registry.js",
+        "src/sites/youtube-studio.js",
+        "src/sites/youtube.js",
+        "src/content/hide.js",
+        "src/content/block.js"
+      ]
+    }
+  ],
   "action": {
     "default_title": "Hide Metrics",
     "default_popup": "src/popup/popup.html"
