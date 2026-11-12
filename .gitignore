@@ -4,7 +4,12 @@ _metadata/
 # macOS
 .DS_Store
 
+# Build output (store zip, screenshots)
+dist/
+
 # Archives (if you export or package the extension)
 *.zip
 *.crx
 
+# Local plan-execution scratch
+.superpowers/
