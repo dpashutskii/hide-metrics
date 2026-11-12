@@ -44,6 +44,20 @@
     return hide;
   }
 
+  // What this page should hide right now, from the worker's `effective`.
+  // No settings yet → everything. A check-in that should be over but hasn't
+  // been closed by the worker yet (late alarm, browser just started) → also
+  // everything: when in doubt, hide.
+  function hideFor(site, effective, now) {
+    if (!effective) return allSwitchesOn(site);
+    if (!(effective.sites && effective.sites[site.id])) return {};
+    const lock = effective.lock;
+    if (lock && lock.checkInOpen && typeof lock.checkInEndsAt === 'number' && now >= lock.checkInEndsAt) {
+      return allSwitchesOn(site);
+    }
+    return effective.hide || {};
+  }
+
   // For DevTools: how many elements each selector matches on this page.
   // count -1 = the selector itself is invalid. 0 on a page that should have
   // the thing usually means the site changed its markup.
@@ -59,5 +73,5 @@
     });
   }
 
-  Object.assign(HM, { registerSite, siteFor, buildCss, allSwitchesOn, report });
+  Object.assign(HM, { registerSite, siteFor, buildCss, allSwitchesOn, hideFor, report });
 })(globalThis.HM = globalThis.HM || {});

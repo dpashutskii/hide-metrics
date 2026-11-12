@@ -24,11 +24,26 @@
   const listeners = [];
   HM.current = { site, effective: null, onChange: (fn) => listeners.push(fn) };
 
+  let checkInTimer = null;
+
+  function render() {
+    const css = HM.buildCss(site, HM.hideFor(site, HM.current.effective, Date.now()));
+    if (style.textContent !== css) style.textContent = css;
+  }
+
   function apply(effective) {
     if (!effective) return; // keep hiding everything until the worker has written settings
     HM.current.effective = effective;
-    const css = effective.sites && effective.sites[site.id] ? HM.buildCss(site, effective.hide) : '';
-    if (style.textContent !== css) style.textContent = css;
+    render();
+    // When a check-in ends, hide again on time even if the worker is late.
+    clearTimeout(checkInTimer);
+    const lock = effective.lock;
+    if (lock && lock.checkInOpen && typeof lock.checkInEndsAt === 'number') {
+      checkInTimer = setTimeout(() => {
+        render();
+        for (const fn of listeners) fn(HM.current.effective);
+      }, Math.max(0, lock.checkInEndsAt - Date.now()) + 50);
+    }
     for (const fn of listeners) fn(effective);
   }
 
@@ -38,6 +53,7 @@
   });
 
   (HM.cleanup = HM.cleanup || []).push(() => {
+    clearTimeout(checkInTimer);
     keeper.disconnect();
     style.remove();
   });

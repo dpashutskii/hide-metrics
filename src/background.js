@@ -121,6 +121,12 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 });
 chrome.permissions.onAdded.addListener(() => guardOpenTabs());
 
+// Every time the worker wakes, bring `effective` and the alarm up to date (an
+// alarm may be late, or the extension was just switched back on). This does
+// not mark what's in storage as accepted, so an outside edit that woke the
+// worker is still checked by the storage listener.
+queue(() => refresh(false));
+
 // Chrome may have been closed across a lock end or a check-in boundary.
 chrome.runtime.onStartup.addListener(() => {
   queue(refresh).then(guardOpenTabs);

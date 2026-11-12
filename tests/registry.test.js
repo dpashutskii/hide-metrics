@@ -57,3 +57,15 @@ test('report counts matches per selector and flags broken ones', () => {
     { switch: 'views+likes', selector: '.card', count: 3 },
   ]);
 });
+
+test('hideFor: what a page should hide right now', () => {
+  const T = Date.UTC(2026, 10, 15, 10, 30);
+  const base = { paused: false, hide: { views: true, likes: false }, sites: { demo: true }, lock: null };
+  assert.deepEqual(HM.hideFor(site, null, T), { views: true, likes: true }); // before settings load: everything
+  assert.deepEqual(HM.hideFor(site, base, T), { views: true, likes: false });
+  assert.deepEqual(HM.hideFor(site, { ...base, sites: { demo: false } }, T), {});
+  const open = { ...base, hide: { views: false, likes: false }, lock: { until: T + 864e5, checkInOpen: true, checkInEndsAt: T, nextCheckIn: null } };
+  assert.deepEqual(HM.hideFor(site, open, T - 1), { views: false, likes: false }); // check-in still open
+  // check-in should be over but the worker hasn't said so yet: hide everything, not nothing
+  assert.deepEqual(HM.hideFor(site, open, T), { views: true, likes: true });
+});

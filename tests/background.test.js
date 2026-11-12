@@ -238,3 +238,18 @@ for (const [name, edit] of [
     assert.equal(b.data.effective.lock.checkInOpen, false);
   });
 }
+
+test('a stale check-in is corrected as soon as the worker wakes', async () => {
+  const H = boot().HM;
+  const now = Date.now();
+  const checkIn = { day: new Date(now - 36e5).getDay(), startMin: 0, lengthMin: 15 };
+  const state = H.defaultState();
+  state.lock = { until: now + 864e5 * 3, checkIn, guard: false, skipUntil: null };
+  // effective written while a window was open, which has since ended
+  const stale = { ...H.computeEffective(state, now), hide: Object.fromEntries(Object.keys(state.hide).map((k) => [k, k === 'aiFeatures'])) };
+  stale.lock = { ...stale.lock, checkInOpen: true, checkInEndsAt: now - 1000 };
+  const b = boot({ state: structuredClone(state), effective: structuredClone(stale) });
+  await idle();
+  assert.equal(b.data.effective.lock.checkInOpen, false);
+  assert.equal(b.data.effective.hide.views, true);
+});

@@ -98,10 +98,8 @@
   }
 
   function shouldBlock() {
-    const e = cur.effective;
-    if (e && !(e.sites && e.sites[site.id])) return false;
-    const statsHidden = e ? !!e.hide.statsPages : true; // before settings load, assume on
-    return statsHidden && site.isStatsPage(new URL(location.href));
+    // Before settings load (or while a check-in is overdue), assume on.
+    return !!HM.hideFor(site, cur.effective, Date.now()).statsPages && site.isStatsPage(new URL(location.href));
   }
 
   function check() {
