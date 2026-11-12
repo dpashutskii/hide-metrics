@@ -13,6 +13,7 @@ function boot(initial = {}, opts = {}) {
   const data = structuredClone(initial);
   const on = { changed: [], message: [], alarm: [], startup: [], installed: [], tabUpdated: [], permAdded: [] };
   const alarms = new Map();
+  const counter = { writes: 0 };
   const tabs = { list: [], updated: [], removed: [], created: [], failUpdate: false, granted: opts.granted ?? true };
   const event = (list) => ({ addListener: (f) => list.push(f) });
   const chrome = {
@@ -36,6 +37,8 @@ function boot(initial = {}, opts = {}) {
           return out;
         },
         async set(obj) {
+          counter.writes++;
+          if (counter.writes > 300) return; // a runaway loop: stop feeding it so the test can fail instead of hang
           const changes = {};
           for (const [k, v] of Object.entries(obj)) {
             if (JSON.stringify(data[k]) === JSON.stringify(v)) continue; // Chrome skips unchanged values
@@ -60,7 +63,7 @@ function boot(initial = {}, opts = {}) {
     const keep = on.message.map((f) => f(msg, { id: 'test-ext' }, resolve));
     assert.ok(keep.includes(true));
   });
-  return { data, on, alarms, tabs, chrome, send, HM: ctx.HM };
+  return { data, on, alarms, tabs, counter, chrome, send, HM: ctx.HM };
 }
 
 test('install writes defaults and effective', async () => {
@@ -214,3 +217,24 @@ test('welcome page opens on install only', async () => {
   await idle();
   assert.deepEqual(b.tabs.created, ['chrome-extension://test-ext/src/pages/welcome.html']);
 });
+
+for (const [name, edit] of [
+  ['moved to now', (ci) => ({ ...ci, day: new Date().getDay(), startMin: 0, lengthMin: 60 })],
+  ['removed', () => null],
+]) {
+  test(`editing the check-in in storage while locked is reverted once (${name})`, async () => {
+    const b = boot();
+    const checkIn = { day: (new Date().getDay() + 3) % 7, startMin: 600, lengthMin: 30 };
+    await b.send({ type: 'action', action: { type: 'lock', until: Date.now() + 6e5, checkIn, guard: false } });
+    await idle();
+    const edited = structuredClone(b.data.state);
+    edited.lock.checkIn = edit(edited.lock.checkIn);
+    await b.chrome.storage.local.set({ state: edited });
+    await idle();
+    const settled = b.counter.writes;
+    await idle();
+    assert.equal(b.counter.writes, settled, 'storage keeps being rewritten');
+    assert.deepEqual(structuredClone(b.data.state.lock.checkIn), checkIn);
+    assert.equal(b.data.effective.lock.checkInOpen, false);
+  });
+}

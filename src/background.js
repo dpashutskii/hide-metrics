@@ -13,15 +13,23 @@ function stable(x) {
       : v);
 }
 
+// The last state this worker wrote or accepted. Everything read from storage
+// is checked against it, so an edit made outside the worker (DevTools) can't
+// loosen a lock, whatever order the change events arrive in. Empty after the
+// worker restarts; then Chrome's own "old value" of a change stands in.
+let accepted = null;
+
 async function load() {
   const { state } = await chrome.storage.local.get('state');
-  return HM.normalizeState(state);
+  const s = HM.normalizeState(state);
+  return accepted ? HM.enforceLock(accepted, s, Date.now()) : s;
 }
 
-async function save(state) {
+async function save(state, trust = true) {
   const now = Date.now();
   const s = HM.settle(HM.normalizeState(state), now);
   const effective = HM.computeEffective(s, now);
+  if (trust) accepted = s;
   await chrome.storage.local.set({ state: s, effective });
   const when = HM.nextTransition(s, now);
   if (when == null) await chrome.alarms.clear(ALARM);
@@ -29,8 +37,8 @@ async function save(state) {
   return { state: s, effective, now };
 }
 
-async function refresh() {
-  return save(await load());
+async function refresh(trust = true) {
+  return save(await load(), trust);
 }
 
 // One change at a time, so a message and a storage edit can't interleave.
@@ -60,16 +68,17 @@ chrome.runtime.onMessage.addListener((msg, sender, reply) => {
 // both checks unchanged, so they cause no further writes.
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area !== 'local') return;
-  const now = Date.now();
   if (changes.state) {
     const raw = changes.state.newValue;
-    const fixed = HM.enforceLock(HM.normalizeState(changes.state.oldValue), HM.normalizeState(raw), now);
+    const old = changes.state.oldValue;
     queue(async () => {
+      const prev = accepted || HM.normalizeState(old);
+      const fixed = HM.enforceLock(prev, HM.normalizeState(raw), Date.now());
       if (stable(fixed) !== stable(raw)) return save(fixed);
       const cur = await chrome.storage.local.get(['state', 'effective']);
-      if (stable(cur.state) === stable(raw) && stable(cur.effective) !== stable(HM.computeEffective(fixed, Date.now()))) {
-        return save(fixed);
-      }
+      if (stable(cur.state) !== stable(raw)) return; // a newer write is in; its own event follows
+      accepted = fixed;
+      if (stable(cur.effective) !== stable(HM.computeEffective(fixed, Date.now()))) return save(fixed);
     });
   } else if (changes.effective) {
     queue(async () => {
