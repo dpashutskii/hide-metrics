@@ -61,3 +61,21 @@ for (const site of [studio, youtube]) {
 test('Studio covers every switch', () => {
   for (const { id } of HM.SWITCHES) assert.ok(studio.selectors[id], `Studio has nothing for ${id}`);
 });
+
+// Places found by the final review and checked live (structure only).
+const ACCOUNT_SUBS = 'ytd-account-item-renderer tp-yt-paper-item-body > yt-formatted-string:nth-of-type(3)';
+
+test('account switcher subscriber counts are hidden on both sites', () => {
+  for (const site of [studio, youtube]) assert.ok(site.selectors.subscribers.includes(ACCOUNT_SUBS), site.id);
+});
+
+test('channel About dialog: subscribers and views rows', () => {
+  assert.ok(youtube.selectors.subscribers.includes('ytd-about-channel-renderer tr:has(yt-icon[icon="person_radar"])'));
+  assert.ok(youtube.selectors.views.includes('ytd-about-channel-renderer tr:has(yt-icon[icon="trending_up"])'));
+});
+
+test('page header counts (channel subscribers, playlist views) hide under both switches', () => {
+  const header = youtube.selectors.subscribers.filter((sel) => sel.startsWith('yt-page-header-view-model'));
+  assert.ok(header.length >= 2);
+  for (const sel of header) assert.ok(youtube.selectors.views.includes(sel), sel);
+});

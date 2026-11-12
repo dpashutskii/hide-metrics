@@ -54,6 +54,8 @@
         'ytcd-channel-facts-item .apply-item-padding:has(> .subscribers-title)',
         'ytcp-ve:has(> a[href*="explore_type=SUBSCRIBERS"])',
         'ytcd-card:has(ytcd-recent-activity-subscribers)',
+        // Account switcher (avatar → Switch account): name, @handle, subscribers.
+        'ytd-account-item-renderer tp-yt-paper-item-body > yt-formatted-string:nth-of-type(3)',
       ],
       revenue: [
         ...summary,

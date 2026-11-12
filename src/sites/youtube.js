@@ -11,6 +11,15 @@
 // still use the older #metadata-line.
 (function (HM) {
   const md = 'yt-content-metadata-view-model';
+  // Channel and playlist headers: keep the first item (@handle / owner), drop
+  // the rest ("N subscribers • N videos", "Playlist • N videos • N views").
+  const headerCounts = [
+    `yt-page-header-view-model ${md} [class*="MetadataRow"]:not(:first-child)`,
+    `yt-page-header-view-model ${md} [class*="MetadataRow"]:first-child > :not(:first-child)`,
+    `yt-page-header-view-model ${md} > [class*="Delimiter"]`,
+  ];
+  // Account switcher (avatar → Switch account): name, @handle, subscribers.
+  const accountSubs = 'ytd-account-item-renderer tp-yt-paper-item-body > yt-formatted-string:nth-of-type(3)';
 
   HM.registerSite({
     id: 'youtube',
@@ -47,14 +56,16 @@
         // End screen.
         '.ytp-videowall-still-info-author',
         '.ytp-modern-videowall-still-view-count-and-date-info',
+        // Channel "About" dialog (…more): the total views row.
+        'ytd-about-channel-renderer tr:has(yt-icon[icon="trending_up"])',
+        ...headerCounts,
       ],
       subscribers: [
         '#owner-sub-count',
         'ytd-video-description-infocards-section-renderer #subtitle',
-        // Channel header: keep the @handle, drop "N subscribers • N videos".
-        `yt-page-header-view-model ${md} [class*="MetadataRow"]:not(:first-child)`,
-        `yt-page-header-view-model ${md} [class*="MetadataRow"]:first-child > :not(:first-child)`,
-        `yt-page-header-view-model ${md} > [class*="Delimiter"]`,
+        ...headerCounts,
+        'ytd-about-channel-renderer tr:has(yt-icon[icon="person_radar"])',
+        accountSubs,
         'ytd-c4-tabbed-header-renderer #subscriber-count',
         // Channel cards in search: handle and count share one line.
         'ytd-channel-renderer #metadata',
