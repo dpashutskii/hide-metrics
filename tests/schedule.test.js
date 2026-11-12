@@ -40,3 +40,12 @@ test('formatting', () => {
   assert.equal(HM.formatLeft(36e5), '1 hour left');
   assert.equal(HM.formatLeft(22 * 6e4 - 500), '22 min left');
 });
+
+test('formatSpan: how long, for the Lock button', () => {
+  assert.equal(HM.formatSpan(7 * 864e5), '7 days');
+  assert.equal(HM.formatSpan(864e5 + 5 * 36e5), '1 day');
+  assert.equal(HM.formatSpan(16 * 36e5 + 20 * 6e4), '16 hours');
+  assert.equal(HM.formatSpan(36e5), '1 hour');
+  assert.equal(HM.formatSpan(9 * 6e4 + 1), '10 min');
+  assert.equal(HM.formatSpan(400 * 864e5), '400 days');
+});

@@ -55,14 +55,19 @@
     return `${WEEKDAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}, ${formatTime(ms)}`;
   }
 
-  const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'} left`;
+  const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
+
+  // "17 days" / "5 hours" / "22 min" (days and hours round down, minutes up)
+  function formatSpan(ms) {
+    if (ms >= DAY) return plural(Math.floor(ms / DAY), 'day');
+    if (ms >= HOUR) return plural(Math.floor(ms / HOUR), 'hour');
+    return `${Math.max(0, Math.ceil(ms / MIN))} min`;
+  }
 
   // "17 days left" / "5 hours left" / "22 min left"
   function formatLeft(ms) {
-    if (ms >= DAY) return plural(Math.floor(ms / DAY), 'day');
-    if (ms >= HOUR) return plural(Math.floor(ms / HOUR), 'hour');
-    return `${Math.max(0, Math.ceil(ms / MIN))} min left`;
+    return `${formatSpan(ms)} left`;
   }
 
-  Object.assign(HM, { checkInWindowAt, nextCheckInWindow, quickPick, formatWhen, formatTime, formatLeft });
+  Object.assign(HM, { checkInWindowAt, nextCheckInWindow, quickPick, formatWhen, formatTime, formatSpan, formatLeft });
 })(globalThis.HM = globalThis.HM || {});

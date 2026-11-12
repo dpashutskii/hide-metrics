@@ -242,12 +242,20 @@
 
   function viewSetup() {
     let until = null;
+    let checkInOn = true;
     const btn = h('button', { class: 'btn', text: 'Lock', disabled: true });
-    const picker = untilPicker(HM.quickPick('week', Date.now()), Date.now(), (t) => { until = t; btn.disabled = t == null; });
+    // The button says how long the lock will last, so a mistyped year shows
+    // before it's too late. With the check-in on, a start time is required.
+    const update = () => {
+      const ok = until != null && (!checkInOn || !!starts.value);
+      btn.disabled = !ok;
+      btn.textContent = until != null ? `Lock for ${HM.formatSpan(until - Date.now())}` : 'Lock';
+    };
+    const picker = untilPicker(HM.quickPick('week', Date.now()), Date.now(), (t) => { until = t; update(); });
 
     const day = h('select', { class: 'plain', 'aria-label': 'Check-in day' }, DAYS.map(([v, text]) => h('option', { value: String(v), text })));
     day.value = '0';
-    const starts = h('input', { type: 'time', class: 'plain', 'aria-label': 'Check-in starts', value: '10:00' });
+    const starts = h('input', { type: 'time', class: 'plain', 'aria-label': 'Check-in starts', value: '10:00', oninput: () => update() });
     const lasts = h('select', { class: 'plain', 'aria-label': 'Check-in length' },
       [15, 30, 60].map((n) => h('option', { value: String(n), text: `${n} min` })));
     lasts.value = '30';
@@ -256,17 +264,16 @@
       h('div', { class: 'row' }, h('span', { text: 'Starts' }), starts),
       h('div', { class: 'row' }, h('span', { text: 'Lasts' }), lasts),
     ];
-    let checkInOn = true;
-    const ciToggle = toggle({ checked: true, label: 'Weekly check-in', onchange: (on) => { checkInOn = on; detail.forEach((r) => { r.hidden = !on; }); } });
+    const ciToggle = toggle({ checked: true, label: 'Weekly check-in', onchange: (on) => { checkInOn = on; detail.forEach((r) => { r.hidden = !on; }); update(); } });
 
     btn.addEventListener('click', () => {
-      if (until == null) return;
+      if (btn.disabled || until == null) return;
       // Ask for `tabs` (lets the lock guard the extensions page) inside this
       // click, and send the lock right away: Chrome's permission prompt can
       // close the popup before the answer comes back. Declining only means
       // no guard; the lock itself works either way.
       if (inExtension) chrome.permissions.request({ permissions: ['tabs'] }).catch(() => {});
-      const checkIn = checkInOn && starts.value
+      const checkIn = checkInOn
         ? { day: Number(day.value), startMin: minutesOf(starts.value), lengthMin: Number(lasts.value) }
         : null;
       view = 'main';
@@ -309,7 +316,11 @@
     const current = data.state.lock.until;
     let until = null;
     const btn = h('button', { class: 'btn', text: 'Extend lock', disabled: true });
-    const picker = untilPicker(current, current, (t) => { until = t; btn.disabled = t == null; });
+    const picker = untilPicker(current, current, (t) => {
+      until = t;
+      btn.disabled = t == null;
+      btn.textContent = t == null ? 'Extend lock' : `Extend by ${HM.formatSpan(t - current)}`;
+    });
     btn.addEventListener('click', async () => {
       if (until == null) return;
       view = 'main';
