@@ -1,0 +1,47 @@
+/* Shared look: black and white, light and dark follow the system. */
+:root {
+  --page: #ececf0;
+  --panel: #ffffff;
+  --group: #f5f5f7;
+  --ink: #1d1d1f;
+  --ink-2: #6e6e73;
+  --ink-3: #a1a1a6;
+  --line: rgba(0, 0, 0, .08);
+  --on: #1d1d1f;
+  --off: #d9d9de;
+  --knob: #ffffff;
+  --lock-bg: #1d1d1f;
+  --lock-ink: #ffffff;
+  --check-bg: #e8f5ec;
+  --check-ink: #1c6b3a;
+  --shadow: 0 10px 30px rgba(0, 0, 0, .12), 0 1px 3px rgba(0, 0, 0, .08);
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #111113;
+    --panel: #1c1c1e;
+    --group: #2a2a2d;
+    --ink: #f5f5f7;
+    --ink-2: #a1a1a6;
+    --ink-3: #6e6e73;
+    --line: rgba(255, 255, 255, .08);
+    --on: #f5f5f7;
+    --off: #3a3a3d;
+    --knob: #1c1c1e;
+    --lock-bg: #f5f5f7;
+    --lock-ink: #1d1d1f;
+    --check-bg: #173322;
+    --check-ink: #8fe0ad;
+    --shadow: 0 10px 30px rgba(0, 0, 0, .5);
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font: 13px/1.35 -apple-system, "SF Pro Text", Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
