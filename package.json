@@ -1,0 +1,10 @@
+{
+  "name": "hide-metrics",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Chrome extension that hides views, subscribers, likes, revenue and stats pages on YouTube Studio and YouTube.",
+  "scripts": {
+    "test": "TZ=UTC node --test tests/*.test.js && TZ=America/New_York node --test tests/tz/*.test.js"
+  }
+}
