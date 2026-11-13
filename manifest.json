@@ -1,34 +1,51 @@
 {
   "manifest_version": 3,
-  "name": "Focus Blocker for Creators",
-  "version": "0.2.0",
-  "description": "Block vanity-metric pages and UI elements so you can stay focused on creating.",
-  "permissions": ["declarativeNetRequest", "storage"],
+  "name": "Hide Metrics",
+  "version": "1.0.0",
+  "description": "Hide views, subscribers, likes, revenue, stats pages and AI prompts on YouTube Studio and YouTube.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": [
+    "storage",
+    "alarms"
+  ],
+  "optional_permissions": [
+    "tabs"
+  ],
   "host_permissions": [
     "https://studio.youtube.com/*",
-    "https://www.youtube.com/*",
-    "https://youtube.com/*"
+    "https://www.youtube.com/*"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "src/background.js"
   },
-  "options_page": "options.html",
-  "web_accessible_resources": [
-    {
-      "resources": ["blocked.html", "blocked.css", "blocked.js", "config.js"],
-      "matches": ["<all_urls>"]
-    }
-  ],
   "content_scripts": [
     {
-      "matches": ["https://studio.youtube.com/*", "https://www.youtube.com/*", "https://youtube.com/*"],
-      "js": ["config.js", "content.js"],
-      "css": ["content.css"],
-      "run_at": "document_start"
+      "matches": [
+        "https://studio.youtube.com/*",
+        "https://www.youtube.com/*"
+      ],
+      "run_at": "document_start",
+      "js": [
+        "src/core/schedule.js",
+        "src/content/registry.js",
+        "src/sites/youtube-studio.js",
+        "src/sites/youtube.js",
+        "src/content/hide.js",
+        "src/content/block.js"
+      ]
     }
   ],
   "action": {
-    "default_title": "Focus Blocker",
-    "default_popup": "popup.html"
+    "default_title": "Hide Metrics",
+    "default_popup": "src/popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
   }
 }

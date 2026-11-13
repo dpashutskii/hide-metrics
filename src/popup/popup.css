@@ -1,0 +1,59 @@
+body { width: 320px; background: var(--panel); }
+.popup { padding: 14px; }
+
+.head { display: flex; align-items: center; gap: 10px; padding: 2px 2px 12px; min-height: 40px; }
+.appicon { width: 26px; height: 26px; border-radius: 7px; background: var(--ink); display: grid; place-items: center; flex: none; }
+.appicon svg { width: 15px; height: 15px; }
+.name { font-weight: 650; font-size: 14px; flex: 1; }
+.back { display: flex; align-items: center; gap: 2px; color: var(--ink-2); background: none; border: 0; padding: 4px 2px; cursor: pointer; border-radius: 6px; }
+.title-c { flex: 1; text-align: center; font-weight: 650; font-size: 14px; margin-right: 48px; }
+
+.label { font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-3); margin: 6px 4px; }
+.group { background: var(--group); border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
+.row { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 38px; padding: 0 12px; }
+.row + .row { border-top: 1px solid var(--line); }
+.row .v { color: var(--ink-2); display: flex; align-items: center; gap: 4px; }
+.row.dim > span:first-child { color: var(--ink-3); }
+.row.link { width: 100%; background: none; border: 0; text-align: left; cursor: pointer; }
+.row.link:hover { background: var(--line); }
+.row.small { color: var(--ink-2); font-size: 12px; }
+.paused .group.switches { opacity: .5; }
+
+.site { display: flex; align-items: center; gap: 9px; }
+.fav { width: 18px; height: 18px; border-radius: 5px; background: var(--panel); border: 1px solid var(--line); display: grid; place-items: center; }
+.fav svg { width: 10px; height: 10px; }
+
+.tg { width: 34px; height: 20px; border-radius: 10px; background: var(--off); position: relative; flex: none; border: 0; padding: 0; cursor: pointer; transition: background .15s; }
+.tg::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--knob); box-shadow: 0 1px 2px rgba(0, 0, 0, .25); transition: left .15s; }
+.tg[aria-checked="true"] { background: var(--on); }
+.tg[aria-checked="true"]::after { left: 16px; }
+.tg:disabled { opacity: .45; cursor: default; }
+.lk { width: 11px; height: 11px; color: var(--ink-3); }
+.chev { width: 12px; height: 12px; color: var(--ink-3); flex: none; }
+.showing { color: var(--check-ink); font-size: 12px; font-weight: 550; }
+
+.banner { border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; display: flex; gap: 10px; align-items: center; }
+.banner.lock { background: var(--lock-bg); color: var(--lock-ink); }
+.banner.check { background: var(--check-bg); color: var(--check-ink); }
+.banner svg { width: 18px; height: 18px; flex: none; }
+.banner b { display: block; font-size: 13px; font-weight: 650; }
+.banner span { font-size: 12px; opacity: .75; }
+
+.fields { display: flex; gap: 8px; margin-bottom: 8px; }
+.field { background: var(--group); border: 0; border-radius: 9px; padding: 8px 10px; font-weight: 550; min-width: 0; }
+.field.grow { flex: 1; }
+.chips { display: flex; gap: 6px; margin: 0 0 14px; }
+.chip { border: 1px solid var(--line); border-radius: 999px; padding: 4px 10px; font-size: 12px; color: var(--ink-2); background: var(--panel); cursor: pointer; }
+.chip.sel { border-color: var(--ink); color: var(--ink); font-weight: 550; }
+.chip:disabled { opacity: .4; cursor: default; }
+.plain { background: none; border: 0; color: var(--ink-2); text-align: right; padding: 4px 0; cursor: pointer; }
+select.plain { appearance: none; padding-right: 2px; }
+input.plain::-webkit-calendar-picker-indicator { display: none; }
+.note { color: var(--ink-2); font-size: 12px; margin: 2px 4px 12px; }
+.btn { display: block; width: 100%; text-align: center; border-radius: 10px; padding: 10px; font-weight: 650; background: var(--ink); color: var(--panel); border: 0; cursor: pointer; }
+.btn:disabled { opacity: .35; cursor: default; }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); font-weight: 550; }
+.stack { display: flex; flex-direction: column; padding: 7px 0; }
+.stack small { color: var(--ink-3); font-size: 11px; }
+.mini { flex: none; background: none; border: 1px solid var(--line); border-radius: 999px; padding: 3px 9px; font-size: 12px; color: var(--ink); cursor: pointer; }
+.popup > :last-child { margin-bottom: 0; }
