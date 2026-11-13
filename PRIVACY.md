@@ -49,4 +49,4 @@ browser, by hiding parts of them.
 ## Contact
 
 Questions: open an issue at
-https://github.com/dpashutskii/analytics-blocker/issues
+https://github.com/dpashutskii/hide-metrics/issues

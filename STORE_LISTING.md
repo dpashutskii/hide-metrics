@@ -64,8 +64,7 @@ Not affiliated with YouTube or Google.
 - **Single purpose:** Hide numbers, stats pages and AI prompts on YouTube Studio
   and YouTube.
 - **Privacy policy URL:**
-  `https://github.com/dpashutskii/analytics-blocker/blob/main/PRIVACY.md`
-  (update if the repository is renamed)
+  `https://github.com/dpashutskii/hide-metrics/blob/main/PRIVACY.md`
 - **Data collection:** Declare "does NOT collect or use user data" (no
   analytics, no server). Settings are stored locally via chrome.storage.local.
 
