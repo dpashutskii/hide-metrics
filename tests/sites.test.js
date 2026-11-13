@@ -79,3 +79,11 @@ test('page header counts (channel subscribers, playlist views) hide under both s
   assert.ok(header.length >= 2);
   for (const sel of header) assert.ok(youtube.selectors.views.includes(sel), sel);
 });
+
+test('Studio promo cards hide under Promotions', () => {
+  // Card ids like #ideas are JS properties in Studio, not attributes, so CSS can't use them.
+  assert.ok(!studio.selectors.promotions.some((x) => /#ideas|#creator_insider/.test(x)));
+  for (const sel of ['ytcd-card:has(ytcd-carousel-card)', 'ytcd-help-center-issues-item']) {
+    assert.ok(studio.selectors.promotions.some((x) => x.includes(sel)), sel);
+  }
+});

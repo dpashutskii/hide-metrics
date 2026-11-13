@@ -12,7 +12,10 @@
     { id: 'likes', label: 'Likes' },
     { id: 'comments', label: 'Comments' },
     { id: 'aiFeatures', label: 'AI features' },
+    { id: 'promotions', label: 'Promotions' },
   ];
+  // Not numbers, so a weekly check-in leaves them hidden.
+  const STAY_HIDDEN_IN_CHECK_IN = ['aiFeatures', 'promotions'];
   const SITES = [
     { id: 'youtubeStudio', label: 'YouTube Studio' },
     { id: 'youtube', label: 'YouTube' },
@@ -160,7 +163,7 @@
         checkInEndsAt: open ? Math.min(w.end, until) : null,
         nextCheckIn: next && next.start < until ? next.start : null,
       };
-      if (open) for (const { id } of SWITCHES) hide[id] = id === 'aiFeatures' ? s.hide.aiFeatures : false;
+      if (open) for (const { id } of SWITCHES) hide[id] = STAY_HIDDEN_IN_CHECK_IN.includes(id) ? s.hide[id] : false;
     }
     if (s.paused) for (const { id } of SWITCHES) hide[id] = false;
     return { paused: s.paused, hide, sites: { ...s.sites }, lock };
@@ -189,7 +192,7 @@
   }
 
   Object.assign(HM, {
-    SWITCHES, SITES, defaultState, normalizeState, isLocked, settle, enforceLock, reduce, computeEffective, nextTransition,
+    SWITCHES, SITES, STAY_HIDDEN_IN_CHECK_IN, defaultState, normalizeState, isLocked, settle, enforceLock, reduce, computeEffective, nextTransition,
     isExtensionsPage,
   });
 })(globalThis.HM = globalThis.HM || {});

@@ -88,6 +88,13 @@
         'ytcp-comments-digest',
         'tp-yt-paper-tab#inspiration-tab', // Content → Ideas
       ],
+      promotions: [
+        // Dashboard cards from YouTube itself, not about your channel.
+        // "Ideas for you" (brand deals, shopping) and "Creator Insider" are the
+        // dashboard's carousel cards. Their ids are JS properties, not attributes.
+        'ytcd-card:has(ytcd-carousel-card)',
+        'ytcd-card:has(ytcd-help-center-issues-item)', // What's new in Studio
+      ],
     },
     whenAll: [
       // Channel analytics card: nothing but numbers and links to Insights.

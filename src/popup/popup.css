@@ -23,11 +23,12 @@ body { width: 320px; background: var(--panel); }
 .fav { width: 18px; height: 18px; border-radius: 5px; background: var(--panel); border: 1px solid var(--line); display: grid; place-items: center; }
 .fav svg { width: 10px; height: 10px; }
 
-.tg { width: 34px; height: 20px; border-radius: 10px; background: var(--off); position: relative; flex: none; border: 0; padding: 0; cursor: pointer; transition: background .15s; }
-.tg::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--knob); box-shadow: 0 1px 2px rgba(0, 0, 0, .25); transition: left .15s; }
+.tg { width: 34px; height: 20px; border-radius: 10px; background: var(--off); position: relative; flex: none; border: 0; padding: 0; cursor: pointer; transition: background .18s ease; }
+.tg::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--knob); box-shadow: 0 1px 2px rgba(0, 0, 0, .25); transition: left .18s ease; }
 .tg[aria-checked="true"] { background: var(--on); }
 .tg[aria-checked="true"]::after { left: 16px; }
 .tg:disabled { opacity: .45; cursor: default; }
+@media (prefers-reduced-motion: reduce) { .tg, .tg::after { transition: none; } }
 .lk { width: 11px; height: 11px; color: var(--ink-3); }
 .chev { width: 12px; height: 12px; color: var(--ink-3); flex: none; }
 .showing { color: var(--check-ink); font-size: 12px; font-weight: 550; }

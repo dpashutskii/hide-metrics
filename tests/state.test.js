@@ -16,7 +16,7 @@ const set = (path, value) => ({ type: 'set', path, value });
 test('switches and sites, in order', () => {
   assert.deepEqual(HM.SWITCHES.map((s) => [s.id, s.label]), [
     ['statsPages', 'Stats pages'], ['views', 'Views'], ['subscribers', 'Subscribers'], ['revenue', 'Revenue'],
-    ['likes', 'Likes'], ['comments', 'Comments'], ['aiFeatures', 'AI features'],
+    ['likes', 'Likes'], ['comments', 'Comments'], ['aiFeatures', 'AI features'], ['promotions', 'Promotions'],
   ]);
   assert.deepEqual(HM.SITES.map((s) => [s.id, s.label]), [['youtubeStudio', 'YouTube Studio'], ['youtube', 'YouTube']]);
 });
@@ -28,6 +28,13 @@ test('defaults', () => {
   assert.deepEqual(s.sites, { youtubeStudio: true, youtube: true });
   assert.equal(s.paused, false);
   assert.equal(s.lock, null);
+});
+
+test('settings saved before Promotions existed get it switched on', () => {
+  const old = { v: 1, paused: false, hide: { statsPages: true, views: false, subscribers: true, revenue: true, likes: true, comments: false, aiFeatures: true }, sites: { youtubeStudio: true, youtube: true }, lock: null };
+  const s = HM.normalizeState(old);
+  assert.equal(s.hide.promotions, true);
+  assert.equal(s.hide.views, false);
 });
 
 test('normalize drops junk', () => {
@@ -137,9 +144,9 @@ test('enforceLock does nothing when not locked', () => {
   assert.equal(HM.enforceLock(locked, next, T), next); // lock already over
 });
 
-test('check-in opens numbers but not AI', () => {
+test('check-in opens numbers but not AI or promotions', () => {
   const e = HM.computeEffective(locked, SUN_1010);
-  for (const { id } of HM.SWITCHES) assert.equal(e.hide[id], id === 'aiFeatures', id);
+  for (const { id } of HM.SWITCHES) assert.equal(e.hide[id], id === 'aiFeatures' || id === 'promotions', id);
   assert.equal(e.lock.checkInOpen, true);
   assert.equal(e.lock.checkInEndsAt, U(2026, 10, 15, 10, 30));
   assert.equal(e.lock.until, T);
