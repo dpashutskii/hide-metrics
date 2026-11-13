@@ -38,19 +38,21 @@ Choose what to hide:
 • Likes
 • Comments (counts and the comment section; off by default)
 • AI features: Ask Studio, "Catch me up", AI suggestions and summaries
+• Promotions: YouTube's own cards in Studio, like brand deals and Creator Insider
 
 Choose where:
 • YouTube Studio
 • YouTube (everyone's videos, not just your own)
 
 Hidden things are simply gone: no grey bars, no blur, no "show anyway" button.
-Open a stats page and you'll see a quiet page saying it's hidden.
+Open a stats page and you'll see a quiet page saying it's hidden. Or let
+Insights open and hide just the numbers you choose (English Studio).
 
 HARD MODE
 Lock your choices until a date and time. While locked, switches can only be
 turned on, and the lock can only be extended. Add an optional weekly check-in,
 for example Sunday 10:00 for 30 minutes, when your numbers come back for a
-while (AI features stay hidden).
+while (AI features and promotions stay hidden).
 
 PRIVATE BY DESIGN
 No account, no server, no analytics. Settings stay in your browser on this
@@ -75,8 +77,9 @@ Not affiliated with YouTube or Google.
 - **alarms** — End a hard-mode lock and open/close the weekly check-in at the
   chosen times, even when no YouTube tab is open.
 - **Host: studio.youtube.com** — Hide metrics, Insights pages and AI prompts in
-  YouTube Studio with CSS and a full-page notice. Only the page address is
-  checked (to recognise stats pages); nothing is stored or sent.
+  YouTube Studio with CSS and a full-page notice. The page address is checked
+  to recognise stats pages, and on Insights pages the visible card titles are
+  read to match them to the user's switches; nothing is stored or sent.
 - **Host: www.youtube.com** — Hide view, subscriber, like and comment counts on
   YouTube pages with CSS. Nothing is stored or sent.
 - **Optional: tabs** — Requested only when the user turns on hard mode. Used to

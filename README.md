@@ -9,7 +9,7 @@ pages and AI prompts. Hidden things are simply gone: no grey bars, no blur, no
 
 ## What it hides
 
-Seven switches, each meaning the same thing on every site:
+Eight switches, each meaning the same thing on every site:
 
 | Switch | YouTube Studio | YouTube |
 |---|---|---|
@@ -20,20 +20,26 @@ Seven switches, each meaning the same thing on every site:
 | **Likes** | Like counts on videos, posts and comments | Like counts on videos, Shorts and comments |
 | **Comments** *(off by default)* | Comment counts, Comments card, the comments inbox | Comment section and counts |
 | **AI features** | Ask Studio, "Catch me up", AI suggestions, AI replies | "Ask" panel where present |
+| **Promotions** | YouTube's own dashboard cards: Ideas for you (brand deals), Creator Insider, What's new in Studio | — |
 
 Under **On**, each site has its own switch. The switch at the top of the popup
 pauses everything.
 
 Where a number shares a line with other text and can't be separated by the
-page's structure, the whole line is hidden. Nothing matches on words, so it
-works in any language.
+page's structure, the whole line is hidden. Everything is matched by page
+structure, so it works in any language, with one exception: with **Stats
+pages** off, Insights opens, and its cards follow the other switches by their
+English title ("Views", "Estimated revenue"…), because Insights has no other
+marker of what a number is. In other Studio languages those cards stay
+visible. The realtime and live subscriber count pages follow Views and
+Subscribers by their address.
 
 ## Hard mode
 
 Lock your choices until a date and time. While locked, switches only turn on,
 the lock can only be extended, and the weekly check-in can't be moved. An
 optional **weekly check-in** (for example Sunday 10:00 for 30 minutes) brings
-the numbers back for that window; AI features stay hidden.
+the numbers back for that window; AI features and Promotions stay hidden.
 
 When you lock, Chrome asks for the optional "tabs" permission ("Read your
 browsing history"). With it, opening the browser's extensions page during a
@@ -69,7 +75,7 @@ Layout:
   check-ins; the extensions-page guard.
 - `src/content/` — `hide.js` (one `<style>` built from the switches, injected
   at `document_start` so nothing flashes), `block.js` (the page that replaces
-  stats pages), `registry.js`.
+  stats pages), `labels.js` (Insights cards by title), `registry.js`.
 - `src/sites/` — **everything site-specific**: one file per site with its URL
   rules and selectors per switch. A new site is a new file here plus a row
   under "On".

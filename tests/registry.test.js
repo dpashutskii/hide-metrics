@@ -69,3 +69,12 @@ test('hideFor: what a page should hide right now', () => {
   // check-in should be over but the worker hasn't said so yet: hide everything, not nothing
   assert.deepEqual(HM.hideFor(site, open, T), { views: true, likes: true });
 });
+
+test('labelSwitches: which switches a visible label belongs to', () => {
+  const labelled = { ...site, labels: { card: '.card', title: '.t', words: { views: [/^views$/i, /watch time/i], likes: [/like/i] } } };
+  assert.deepEqual(HM.labelSwitches(labelled, '  Views '), ['views']);
+  assert.deepEqual(HM.labelSwitches(labelled, 'Watch time (hours)'), ['views']);
+  assert.deepEqual(HM.labelSwitches(labelled, 'Likes vs. dislikes'), ['likes']);
+  assert.deepEqual(HM.labelSwitches(labelled, 'Weergaven'), []); // other languages: no match
+  assert.deepEqual(HM.labelSwitches(site, 'Views'), []); // a site without labels
+});

@@ -99,7 +99,11 @@
 
   function shouldBlock() {
     // Before settings load (or while a check-in is overdue), assume on.
-    return !!HM.hideFor(site, cur.effective, Date.now()).statsPages && site.isStatsPage(new URL(location.href));
+    const hide = HM.hideFor(site, cur.effective, Date.now());
+    const url = new URL(location.href);
+    if (hide.statsPages && site.isStatsPage(url)) return true;
+    const sw = site.pageSwitch ? site.pageSwitch(url) : null;
+    return !!(sw && hide[sw]);
   }
 
   function check() {

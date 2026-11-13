@@ -83,12 +83,16 @@
     return svg;
   }
 
-  // A switch. `onchange(next)` gets the new value.
+  // A switch. `onchange(next)` gets the new value. The knob moves at once and
+  // the popup waits for its slide to finish before redrawing anything.
+  const SLIDE_MS = 180;
+  let settleUntil = 0;
   function toggle({ checked, disabled, label, onchange }) {
     const btn = h('button', { class: 'tg', role: 'switch', 'aria-checked': String(!!checked), 'aria-label': label, disabled: !!disabled });
     btn.addEventListener('click', () => {
       const next = btn.getAttribute('aria-checked') !== 'true';
       btn.setAttribute('aria-checked', String(next));
+      settleUntil = Date.now() + SLIDE_MS;
       onchange(next);
     });
     return btn;
@@ -166,7 +170,7 @@
     kids.push(label('Hide'));
     kids.push(group('switches', HM.SWITCHES.map((sw) => {
       if (!open) return switchRow(['hide', sw.id], h('span', { text: sw.label }), sw.label, state.hide[sw.id], locked);
-      const still = sw.id === 'aiFeatures' && effective.hide.aiFeatures;
+      const still = HM.STAY_HIDDEN_IN_CHECK_IN.includes(sw.id) && effective.hide[sw.id];
       return h('div', { class: still ? 'row dim' : 'row' }, h('span', { text: sw.label }),
         h('span', { class: still ? 'v' : 'showing', text: still ? 'Still hidden' : 'Showing' }));
     })));
@@ -334,8 +338,21 @@
     app.replaceChildren(...parts.flat().filter((p) => p != null && p !== false));
   }
 
+  // What is on screen, so a refresh that changes nothing doesn't redraw.
+  let shown = '';
+  let renderTimer = null;
+
   function render() {
     if (!data) return;
+    const wait = settleUntil - Date.now();
+    if (wait > 0) {
+      clearTimeout(renderTimer);
+      renderTimer = setTimeout(render, wait);
+      return;
+    }
+    const sig = JSON.stringify([view, data.state, data.effective, Math.floor(data.now / 6e4), incognitoAllowed]);
+    if (view === 'main' && sig === shown) return;
+    shown = sig;
     if (view === 'setup') viewSetup();
     else if (view === 'extend') viewExtend();
     else viewMain();

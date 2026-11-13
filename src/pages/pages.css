@@ -13,5 +13,5 @@ p { color: var(--ink-2); font-size: 15px; line-height: 1.5; margin: 0 0 14px; }
 .steps li { display: flex; gap: 12px; align-items: baseline; padding: 12px 14px; font-size: 14px; }
 .steps li + li { border-top: 1px solid var(--line); }
 .steps b { color: var(--ink-3); font-weight: 600; width: 14px; flex: none; }
-.frame { width: 320px; height: 600px; border: 0; border-radius: 14px; box-shadow: var(--shadow); background: var(--panel); display: block; }
+.frame { width: 320px; height: 640px; border: 0; border-radius: 14px; box-shadow: var(--shadow); background: var(--panel); display: block; }
 .foot { color: var(--ink-3); font-size: 12px; margin-top: 28px; }
