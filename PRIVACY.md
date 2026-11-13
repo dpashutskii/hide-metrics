@@ -1,6 +1,6 @@
 # Privacy Policy — Hide Metrics
 
-_Last updated: 2026-11-12_
+_Last updated: 2026-11-13_
 
 Hide Metrics is a browser extension that hides numbers (views, subscribers,
 likes, revenue, comments), stats pages and AI prompts on YouTube Studio
@@ -17,7 +17,7 @@ is sent to the developer or to anyone else.
 Your settings are stored only in your browser with `chrome.storage.local`:
 
 - which switches are on (Stats pages, Views, Subscribers, Revenue, Likes,
-  Comments, AI features) and on which sites;
+  Comments, AI features, Promotions) and on which sites;
 - hard mode, if you use it: when the lock ends and your weekly check-in time.
 
 These settings stay on the device where you set them. They are not synced and
@@ -36,9 +36,9 @@ browser, by hiding parts of them.
   time.
 - Access to `studio.youtube.com` and `www.youtube.com` — to hide numbers,
   stats pages and AI prompts on those two sites. It looks only at the page
-  address (to recognise stats pages) and at the page's layout (to know what to
-  hide); it doesn't read or keep what you watch, write or see, and sends
-  nothing anywhere.
+  address (to recognise stats pages), at the page's layout (to know what to
+  hide) and, on Studio's Insights pages, at the card titles (like "Views") to
+  match them to your switches. It doesn't keep or send anything it sees.
 - `tabs` (optional, asked only when you turn on hard mode) — lets the
   extension notice when the browser's extensions page is opened during a lock
   and show a "locked" page instead. Chrome describes this permission as

@@ -35,7 +35,8 @@
         "src/sites/youtube-studio.js",
         "src/sites/youtube.js",
         "src/content/hide.js",
-        "src/content/block.js"
+        "src/content/block.js",
+        "src/content/labels.js"
       ]
     }
   ],

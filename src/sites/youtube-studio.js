@@ -23,6 +23,7 @@
   ];
   // Latest post: likes and comments as two unlabeled rows.
   const postStats = 'ytcd-post-stats-item';
+  const isStatsPage = (url) => /\/(analytics|explore)(\/|$)/.test(url.pathname);
 
   HM.registerSite({
     id: 'youtubeStudio',
@@ -32,7 +33,33 @@
     backLabel: 'Back to Studio',
     // Insights (channel and per video, incl. Advanced mode) and the
     // realtime / live-count pages.
-    isStatsPage: (url) => /\/(analytics|explore)(\/|$)/.test(url.pathname),
+    isStatsPage,
+    // With Stats pages off, the realtime and live-count pages still follow
+    // Views and Subscribers: the URL says which one they are.
+    pageSwitch(url) {
+      if (!/\/explore(\/|$)/.test(url.pathname)) return null;
+      const type = url.searchParams.get('explore_type');
+      return type === 'SUBSCRIBERS' ? 'subscribers' : type === 'LATEST_ACTIVITY' ? 'views' : null;
+    },
+    // With Stats pages off, Insights cards follow the other switches by their
+    // title. The new Insights pages have no other marker of what a number is,
+    // so this reads the English titles (the author's choice): in other Studio
+    // languages nothing matches and Insights shows as is.
+    labels: {
+      where: isStatsPage,
+      card: 'yt-card-view-model',
+      title: '[class*="ShelfHeaderLayoutTitle"]',
+      words: {
+        views: [/\bviews?\b/i, /watch time/i, /watched/i, /video performance/i, /top content/i, /viewers/i,
+          /audience/i, /watch behavio/i, /demographics/i, /geographies/i, /impressions/i, /click-through/i,
+          /view duration/i, /traffic/i, /realtime/i, /^top (videos|shorts|posts|live)/i],
+        subscribers: [/subscri/i],
+        revenue: [/revenue/i, /earning/i, /make money/i, /\bad type/i, /\b[rc]pm\b/i, /memberships?/i,
+          /super (chat|thanks|stickers)/i, /shopping/i, /transactions/i],
+        likes: [/\blikes?\b/i],
+        comments: [/\bcomments?\b/i],
+      },
+    },
     selectors: {
       statsPages: [
         'ytcp-navigation-drawer li:has(a[href*="/analytics"])',
@@ -82,6 +109,7 @@
         'ytcp-sam-chat',
         'ytcp-creator-chat-entrypoint-button',
         'ytcp-ask-studio-card-view-model',
+        'yt-card-view-model:has(ytcp-ask-studio-card-view-model)', // its card frame on Insights
         '.ask-studio-container',
         'ytcp-metadata-suggestions-container',
         'ytcp-comment [id^="comment-smart-replies"]', // AI reply chips + their label

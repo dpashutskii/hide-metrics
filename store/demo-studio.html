@@ -55,8 +55,12 @@
   .btn { display: inline-block; margin-top: 12px; padding: 8px 14px; border-radius: 18px; background: #f2f2f2; font-size: 14px; font-weight: 500; }
   .post { font-size: 14px; color: #333; line-height: 1.45; }
   .muted { color: var(--yt-ink-2); font-size: 13px; }
-  .news { display: flex; gap: 12px; padding: 6px 0; }
-  .news i { width: 64px; height: 40px; border-radius: 6px; background: linear-gradient(135deg, #e8e8e8, #cfcfcf); flex: none; }
+  .cm { display: flex; gap: 10px; padding: 8px 0; }
+  .cm i { width: 28px; height: 28px; border-radius: 50%; flex: none; }
+  .cm b { font-size: 13px; font-weight: 500; color: var(--yt-ink-2); }
+  .a1 { background: linear-gradient(135deg, #b7d3c4, #7fa891); }
+  .a2 { background: linear-gradient(135deg, #e6c3c3, #b98585); }
+  .a3 { background: linear-gradient(135deg, #c7c9e6, #8b8fc0); }
   .popup { position: fixed; top: 64px; right: 28px; width: 320px; border: 0; border-radius: 14px; box-shadow: 0 18px 50px rgba(0,0,0,.22), 0 2px 6px rgba(0,0,0,.08); background: #fff; }
 
   /* The page that replaces Insights (same design as src/content/block.js). */
@@ -123,10 +127,11 @@
         </div>
         <div>
           <div class="card">
-            <h2>What's new in Studio</h2>
-            <div class="news"><i></i><div class="muted">New ways to add chapters to your videos</div></div>
-            <div class="news"><i></i><div class="muted">Updates to playlist settings</div></div>
-            <div class="news"><i></i><div class="muted">Tips for captions in more languages</div></div>
+            <h2>Comments</h2>
+            <div class="cm"><i class="a1"></i><div><b>@sam.makes</b><div class="post">The desk build was so calming to watch.</div></div></div>
+            <div class="cm"><i class="a2"></i><div><b>@lea_films</b><div class="post">Which camera did you use for the morning shots?</div></div></div>
+            <div class="cm"><i class="a3"></i><div><b>@noor</b><div class="post">Small town video made my week.</div></div></div>
+            <div class="btn">View more</div>
           </div>
         </div>
       </div>

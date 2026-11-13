@@ -87,3 +87,32 @@ test('Studio promo cards hide under Promotions', () => {
     assert.ok(studio.selectors.promotions.some((x) => x.includes(sel)), sel);
   }
 });
+
+// Insights cards carry only an English title (chosen by the author; other
+// Studio languages fall back to showing them). Titles below are Studio's own.
+test('Studio Insights card titles map to switches', () => {
+  const cases = {
+    views: ['Views', 'Watch time (hours)', '48 hour views', 'Watched right now', 'Recent video performance', 'Top content',
+      'How viewers find your content', 'How viewers found this video', 'Monthly audience', 'Watch behavior', 'Top demographics',
+      'Top geographies', 'Impressions', 'Click-through rate', 'Audience retention', 'Average view duration'],
+    subscribers: ['Subscribers', 'Total subscribers'],
+    revenue: ['Estimated revenue', 'Top earning', 'Ways of earning', 'Monthly revenue', 'How you make money', 'Top ad type', 'RPM'],
+    likes: ['Likes vs. dislikes'],
+  };
+  for (const [sw, titles] of Object.entries(cases)) {
+    for (const t of titles) assert.ok(HM.labelSwitches(studio, t).includes(sw), `${t} → ${sw}`);
+  }
+  assert.deepEqual(HM.labelSwitches(studio, 'Overview'), []);
+  assert.deepEqual(HM.labelSwitches(studio, 'Weergaven'), []);
+});
+
+test('Studio realtime and live-count pages are blocked by their own switch', () => {
+  const at = (q) => new URL(`https://studio.youtube.com/channel/${CH}/explore?entity_type=CHANNEL&entity_id=${CH}&time_period=4_weeks&explore_type=${q}`);
+  assert.equal(studio.pageSwitch(at('SUBSCRIBERS')), 'subscribers');
+  assert.equal(studio.pageSwitch(at('LATEST_ACTIVITY')), 'views');
+  assert.equal(studio.pageSwitch(new URL(`https://studio.youtube.com/channel/${CH}/analytics/hub_overview`)), null);
+});
+
+test('Insights AI card disappears with its frame', () => {
+  assert.ok(studio.selectors.aiFeatures.includes('yt-card-view-model:has(ytcp-ask-studio-card-view-model)'));
+});

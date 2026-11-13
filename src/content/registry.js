@@ -5,6 +5,9 @@
 //   isStatsPage(url: URL) → boolean,
 //   selectors: { [switchId]: string[] },              // hidden when that switch is on
 //   whenAll?: [{ switches: switchId[], selectors }],  // hidden when all listed switches are on
+//   pageSwitch?(url: URL) → switchId | null,          // whole page blocked when that switch is on
+//   labels?: { where(url) → bool, card, title, words: { [switchId]: RegExp[] } },
+//            // cards whose visible title matches a hidden switch's words are hidden
 // }
 (function (HM) {
   const sites = [];
@@ -58,6 +61,15 @@
     return effective.hide || {};
   }
 
+  // Which switches a visible label belongs to, for sites whose pages carry no
+  // other marker (see Site.labels). [] when the site has no labels or none match.
+  function labelSwitches(site, text) {
+    const words = site.labels && site.labels.words;
+    if (!words) return [];
+    const t = String(text || '').trim();
+    return Object.keys(words).filter((sw) => words[sw].some((re) => re.test(t)));
+  }
+
   // For DevTools: how many elements each selector matches on this page.
   // count -1 = the selector itself is invalid. 0 on a page that should have
   // the thing usually means the site changed its markup.
@@ -73,5 +85,5 @@
     });
   }
 
-  Object.assign(HM, { registerSite, siteFor, buildCss, allSwitchesOn, hideFor, report });
+  Object.assign(HM, { registerSite, siteFor, buildCss, allSwitchesOn, hideFor, labelSwitches, report });
 })(globalThis.HM = globalThis.HM || {});
