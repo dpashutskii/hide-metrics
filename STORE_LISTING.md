@@ -63,10 +63,13 @@ Not affiliated with YouTube or Google.
 
 ## Privacy
 
-- **Single purpose:** Hide numbers, stats pages and AI prompts on YouTube Studio
-  and YouTube.
+- **Single purpose:** Hide numbers and distractions on YouTube Studio and
+  YouTube: view, subscriber, like and revenue counts, stats pages, AI prompts
+  and YouTube's own promo cards.
 - **Privacy policy URL:**
-  `https://github.com/dpashutskii/hide-metrics/blob/main/PRIVACY.md`
+  `https://raw.githubusercontent.com/dpashutskii/hide-metrics/main/PRIVACY.md`
+  (the github.com/…/blob/… page of this repo answered 503 to the store's
+  check after the repo rename; the raw file is always reachable)
 - **Data collection:** Declare "does NOT collect or use user data" (no
   analytics, no server). Settings are stored locally via chrome.storage.local.
 
@@ -93,5 +96,6 @@ Not affiliated with YouTube or Google.
 - **Screenshots (1280×800):** built from a made-up demo channel, not a real
   Studio. Regenerate with the steps in the README ("Store screenshots"); they
   land in `dist/`.
-- **Small promo tile (optional):** 440×280.
-- The 128×128 store icon is taken from the packaged `icons/icon128.png`.
+- **Small promo tile (440×280):** `python3 scripts/promo_tile.py` writes
+  `dist/promo-small-440x280.png`.
+- **Store icon (128×128):** `icons/icon128.png`.
