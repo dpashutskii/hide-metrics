@@ -116,3 +116,8 @@ test('Studio realtime and live-count pages are blocked by their own switch', () 
 test('Insights AI card disappears with its frame', () => {
   assert.ok(studio.selectors.aiFeatures.includes('yt-card-view-model:has(ytcp-ask-studio-card-view-model)'));
 });
+
+test('YouTube: like count on your own videos (older toggle button in the actions row)', () => {
+  // Owners get ytd-toggle-button-renderer instead of like-button-view-model (seen 2026-11).
+  assert.ok(youtube.selectors.likes.includes('ytd-watch-metadata #top-level-buttons-computed > ytd-toggle-button-renderer [class*="ButtonTextContent"]'));
+});
