@@ -75,6 +75,9 @@
         'like-button-view-model [class*="button-text-content"]',
         'like-button-view-model [class*="WithLabelLabel"]',
         'like-button-view-model [class*="with-label__label"]',
+        // On your own videos the like button is still the older toggle button.
+        'ytd-watch-metadata #top-level-buttons-computed > ytd-toggle-button-renderer [class*="ButtonTextContent"]',
+        'ytd-watch-metadata #top-level-buttons-computed > ytd-toggle-button-renderer [class*="button-text-content"]',
         '#vote-count-middle',
         'yt-list-item-like-count-view-model',
       ],
