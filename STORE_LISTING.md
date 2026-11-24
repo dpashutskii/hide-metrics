@@ -67,7 +67,7 @@ Not affiliated with YouTube or Google.
   YouTube: view, subscriber, like and revenue counts, stats pages, AI prompts
   and YouTube's own promo cards.
 - **Privacy policy URL:**
-  `https://raw.githubusercontent.com/dpashutskii/hide-metrics/main/PRIVACY.md`
+  `https://raw.githubusercontent.com/shi-boba/hide-metrics/main/PRIVACY.md`
   (the github.com/…/blob/… page of this repo answered 503 to the store's
   check after the repo rename; the raw file is always reachable)
 - **Data collection:** Declare "does NOT collect or use user data" (no
