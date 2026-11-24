@@ -1,11 +1,13 @@
 # Privacy Policy — Hide Metrics
 
-_Last updated: 2026-11-13_
+_Last updated: 2026-11-23_
 
-Hide Metrics is a browser extension that hides numbers (views, subscribers,
-likes, revenue, comments), stats pages and AI prompts on YouTube Studio
-(studio.youtube.com) and YouTube (www.youtube.com). This policy explains
-exactly what the extension does with data.
+Published at https://tacodigest.com/hide-metrics/privacy
+
+Hide Metrics is a free browser extension made by Taco Digest. It hides
+numbers (views, subscribers, likes, revenue, comments), stats pages and AI
+prompts on YouTube Studio (studio.youtube.com) and YouTube (www.youtube.com).
+This policy explains exactly what the extension does with data.
 
 ## What we collect
 
@@ -46,7 +48,8 @@ browser, by hiding parts of them.
   extensions page and keeps no record of the pages you visit. You can decline
   it; the lock still works without it.
 
-## Contact
+## Who makes it
 
-Questions: open an issue at
-https://github.com/shi-boba/hide-metrics/issues
+ShiBoba (Taco Digest), Wiborgeiland 130, 1014 ZC Amsterdam, the Netherlands.
+Questions about this policy: support@tacodigest.com. To report a problem with
+the extension, open an issue at https://github.com/shi-boba/hide-metrics/issues

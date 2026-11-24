@@ -58,18 +58,28 @@ PRIVATE BY DESIGN
 No account, no server, no analytics. Settings stay in your browser on this
 device. The extension makes no network requests.
 
+MADE BY TACO DIGEST
+Hide Metrics is made by Taco Digest. Taco Digest sends the newsletters, feeds
+and YouTube channels you follow in one email, at a time you pick:
+tacodigest.com
+
 Not affiliated with YouTube or Google.
 ```
+
+## Links (Store listing tab)
+
+- **Homepage URL:**
+  `https://tacodigest.com/hide-metrics?utm_source=hide-metrics&utm_medium=extension&utm_campaign=store`
+  (the tags let Taco Digest's sign-up record that a visitor came from the store)
+- **Support URL:** `https://github.com/shi-boba/hide-metrics/issues`
 
 ## Privacy
 
 - **Single purpose:** Hide numbers and distractions on YouTube Studio and
   YouTube: view, subscriber, like and revenue counts, stats pages, AI prompts
   and YouTube's own promo cards.
-- **Privacy policy URL:**
-  `https://raw.githubusercontent.com/shi-boba/hide-metrics/main/PRIVACY.md`
-  (the github.com/…/blob/… page of this repo answered 503 to the store's
-  check after the repo rename; the raw file is always reachable)
+- **Privacy policy URL:** `https://tacodigest.com/hide-metrics/privacy`
+  (the same text as PRIVACY.md; change both together)
 - **Data collection:** Declare "does NOT collect or use user data" (no
   analytics, no server). Settings are stored locally via chrome.storage.local.
 

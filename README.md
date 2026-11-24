@@ -133,6 +133,9 @@ and normalize it with `python3 scripts/store_screenshot.py <png> dist/<name>.png
 ## Privacy
 
 No data collected, no server, no network requests. Settings stay on this
-device. See [PRIVACY.md](PRIVACY.md).
+device. See [PRIVACY.md](PRIVACY.md), also published at
+[tacodigest.com/hide-metrics/privacy](https://tacodigest.com/hide-metrics/privacy).
 
-Not affiliated with YouTube or Google.
+Hide Metrics is made by [Taco Digest](https://tacodigest.com/?utm_source=hide-metrics&utm_medium=github&utm_campaign=readme),
+which sends the newsletters, feeds and YouTube channels you follow in one
+email, at a time you pick. Not affiliated with YouTube or Google.
