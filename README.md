@@ -1,5 +1,9 @@
 # Hide Metrics
 
+[![Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-Install-4285F4?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/hide-metrics/mlfmeigifcmllfmiaomllincgkgdkkgi)
+[![Version](https://img.shields.io/chrome-web-store/v/mlfmeigifcmllfmiaomllincgkgdkkgi?label=version)](https://chromewebstore.google.com/detail/hide-metrics/mlfmeigifcmllfmiaomllincgkgdkkgi)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/dpashutskii)
+
 A Chrome extension (Manifest V3) that hides the numbers on **YouTube Studio**
 and **YouTube**: views, subscribers, likes, revenue, comment counts, stats
 pages and AI prompts. Hidden things are simply gone: no grey bars, no blur, no
@@ -49,7 +53,7 @@ bump, not a cage.
 
 ## Install
 
-From the Chrome Web Store: _link coming after review_.
+**[➜ Install from the Chrome Web Store](https://chromewebstore.google.com/detail/hide-metrics/mlfmeigifcmllfmiaomllincgkgdkkgi)** — the easy way.
 
 Or load it unpacked:
 
