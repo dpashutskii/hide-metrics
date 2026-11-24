@@ -49,4 +49,4 @@ browser, by hiding parts of them.
 ## Contact
 
 Questions: open an issue at
-https://github.com/dpashutskii/hide-metrics/issues
+https://github.com/shi-boba/hide-metrics/issues
